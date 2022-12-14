@@ -33,6 +33,7 @@ class ItemRepository:
 items = ItemRepository()
 items.populate_data()
 items.print_list()
+stud_name = ""
 
 taxes = {
     "Plactic Ware": 5.0,
@@ -96,6 +97,8 @@ class CartMenu(Menu):
         bill = [["Sr. No.", "Item", "Price", "Tax", "Grand Total"]]
         total_price = 0
         total_tax = 0
+        print("Thanks for using our platform ")
+        print("Billing Name: " + stud_name)
         for i, item in enumerate(cart):
             total_price += float(item.price)
             total_tax += float(item.price) * taxes[item.category]/100
@@ -114,7 +117,6 @@ class CartMenu(Menu):
         if option == 2:
             self.print_bill()
             cart = []
-            print("Thanks for purchasing.")
             manager.change_menu(MainMenu())
 
 class MainMenu(Menu):
@@ -147,8 +149,9 @@ class LoginMenu(Menu):
 
     def process_input(self, manager, option):
         if option == 1:
-            input("Enter Student id: ")
-            user_name = input("Enter Name: ")
+            global stud_name
+            stud_id = input("Enter Student id: ")
+            stud_name = user_name = input("Enter Name: ")
             print("Welcome User, you are logged in as " + user_name)
             manager.change_menu(MainMenu())
 
@@ -161,7 +164,7 @@ class LoginMenu(Menu):
                 manager.change_menu(Admin_Menu())
 
 
-
+                    
 class MenuManager:
     current_menu = LoginMenu()
     history = []
@@ -186,14 +189,16 @@ class MenuManager:
 
             self.current_menu.print_header()
             print(tabulate(options))
-            choice = int(input()) - 1
-            if choice < len(self.current_menu.options):
-                self.current_menu.process_input(self, choice+1)
-            else:
-                if len(self.history) == 0:
-                    return
+            try:
+                choice = int(input()) - 1
+                if choice < len(self.current_menu.options):
+                    self.current_menu.process_input(self, choice+1)
+                else:
+                    if len(self.history) == 0:
+                        return
 
-                self.current_menu = self.history.pop()
-
+                    self.current_menu = self.history.pop()
+            except ValueError:
+                print("Invalid Input, Please try again.")
 manager = MenuManager()
 manager.process_input()
